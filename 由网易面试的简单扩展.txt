@@ -1,0 +1,103 @@
+var a=1,b=2;
+console.log(a&&b);        //2
+console.log(a||b);        //1
+console.log(a&b);         
+console.log(a|b);         
+
+
+按位与（ AND）             a & b                 对于每一个比特位，只有两个操作数相应的比特位都是1时，结果才为1，否则为0。
+按位或（OR）               a | b                 对于每一个比特位，当两个操作数相应的比特位至少有一个1时，结果为1，否则为0。
+按位异或（XOR）            a ^ b                 对于每一个比特位，当两个操作数相应的比特位有且只有一个1时，结果为1，否则为0。
+按位非（NOT）              ~ a                   反转操作数的比特位，即0变成1，1变成0。
+左移（Left shift）         a << b                将 a 的二进制形式向左移 b (< 32) 比特位，右边用0填充。
+有符号右移                 a >> b                将 a 的二进制表示向右移 b (< 32) 位，丢弃被移出的位。
+无符号右移                 a >>> b               将 a 的二进制表示向右移 b (< 32) 位，丢弃被移出的位，并使用 0 在左侧填充。
+
+
+
+number 和 parseInt()
+
+  Number("324") // 324
+  Number("324abc") // NaN
+  Number("") // 0
+  Number(false) // 0
+  Number(undefined) // NaN
+  Number(null) // 0
+
+  parseInt('011') // 9
+  parseInt('42 cats') // 42
+  parseInt('0xcafebabe') // 3405691582
+  
+  Number('011') // 11
+  Number('42 cats') // NaN
+  Number('0xcafebabe') // 3405691582
+
+用一个字符串加上一个数字（或其他值），那么操作数都会被首先转换为字符串。
+
+  > "3" + 4 + 5
+  345
+  > 3 + 4 + "5"
+  75
+通过与空字符串相加，可以将某个变量快速转换成字符串类型。
+
+
+
+https://github.com/mzpuu/pangu.git
+
+**this 
+
+function makePerson(first, last) {
+    return {
+        first: first,
+        last: last,
+        fullName: function() {
+            return this.first + ' ' + this.last;
+        },
+        fullNameReversed: function() {
+            return this.last + ', ' + this.first;
+        }
+    }
+}
+> s = makePerson("Simon", "Willison")
+> s.fullName()
+Simon Willison
+> s.fullNameReversed()
+Willison, Simon
+
+s = makePerson("Simon", "Willison")
+> var fullName = s.fullName;
+> fullName()
+undefined undefined     //调用 fullName() 时，this 实际上是指向全局对象的，并没有名为 first 或 last 的全局变量，所以它们两个的返回值都会是 undefined。
+
+function Person(first, last) {
+    this.first = first;
+    this.last = last;
+    this.fullName = function() {
+        return this.first + ' ' + this.last;
+    }
+    this.fullNameReversed = function() {
+        return this.last + ', ' + this.first;
+    }
+}
+var s = new Person("Simon", "Willison");    //关键字：new，它和 this 密切相关。它的作用是创建一个崭新的空对象，然后使用指向那个对象的 this 调用特定的函数。注意，含有 this 的特定函数不会返回任何值，只会修改 this 对象本身。new 关键字将生成的 this 对象返回给调用方，而被 new 调用的函数成为构造函数。习惯的做法是将这些函数的首字母大写，这样用 new 调用他们的时候就容易识别了。
+
+//类似网易面试题
+function Person(first, last) {
+    this.first = first;
+    this.last = last;
+}
+Person.prototype.fullName = function() {
+    return this.first + ' ' + this.last;
+}
+Person.prototype.fullNameReversed = function() {
+    return this.last + ', ' + this.first;
+}
+
+s = new Person("Simon", "Willison");
+> s.firstNameCaps();
+    //TypeError on line 1: s.firstNameCaps is not a function
+> Person.prototype.firstNameCaps = function() {
+    return this.first.toUpperCase()
+}
+> s.firstNameCaps()
+    //SIMON
